@@ -110,6 +110,13 @@ const Header = () => {
     </div>
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+
+    tonavigate("/login");
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="relative" style={{backgroundColor:'lightgray', borderRadius:'10px'}}>
@@ -124,7 +131,7 @@ const Header = () => {
           <Button color="inherit">
           <FontAwesomeIcon icon={faBell} style={{paddingright:'12px', color:'black'}}/>
           </Button>
-          <Button color="dark" variant="contained">Logout
+          <Button color="dark" variant="contained" onClick={handleLogout}>Logout
           <FontAwesomeIcon icon={faSignOut} style={{paddingLeft:'5px', color:'black'}}/>
           </Button>
         </Toolbar>

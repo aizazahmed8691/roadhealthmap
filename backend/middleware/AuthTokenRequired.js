@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     //console.log(token);
     jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
         if (err) {
-            return res.status(401).json({error: "You must be logged in!"});
+            return res.status(401).json({error: "You must logged in!"});
         }
         const {_id} = payload;
         Admin.findById(_id).then(adminData => {

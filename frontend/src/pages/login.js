@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,7 +17,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle, } from "@material-ui/core";
 
 const theme = createTheme();
 
@@ -40,39 +43,45 @@ const Login = () => {
     event.preventDefault();
   };
   const history = useNavigate();
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errormsg, setErrormsg] = useState(null);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    if(email === '' || password === ''){
-      setErrormsg("All fields are required!")
+    if (email === "" || password === "") {
+      setErrormsg("All fields are required!");
       return;
     } else {
       console.log(email, password);
-      await axios.post('http://localhost:5000/login', {
+      await axios
+        .post("http://localhost:5000/login", {
           email,
-          password
+          password,
         })
         .then((response) => {
           console.log(response.data.savedAdmin);
-          alert("Login Successfully!")
-          localStorage.setItem('user',JSON.stringify(response.data.savedAdmin))
+          alert("Login Successfully!");
+          localStorage.setItem(
+            "user",
+            JSON.stringify(response.data.savedAdmin)
+          );
           history("/dashboard");
         })
         .catch((error) => {
-          if(error.response) {
+          if (error.response) {
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
             setErrormsg(error.response.data);
-            alert("incorrect password or Email")
+            alert("incorrect password or Email");
           } else if (error.request) {
             console.log(error.request);
-            setErrormsg('Netwrok Error. Please check your interenet connection.')
+            setErrormsg(
+              "Netwrok Error. Please check your interenet connection."
+            );
           } else {
-            console.log('Error', error.message);
+            console.log("Error", error.message);
             setErrormsg(error.message);
           }
           console.log(error.config);
@@ -84,6 +93,38 @@ const Login = () => {
     });
   };
 
+  const [openforgot, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [forgotemail, setForgotEmail] = useState("");
+  const handleEmailChange = (event) => {
+    setForgotEmail(event.target.value);
+  };
+
+  const handleEmailSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/forgotPassword", {
+        email: forgotemail,
+      });
+      const { success, message } = response.data;
+      if (success) {
+        alert("Password reset link sent to your email.");
+      } else {
+        alert(message);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+  
   return (
     <div style={myStyle}>
       <ThemeProvider theme={theme}>
@@ -128,7 +169,7 @@ const Login = () => {
                   autoComplete="email"
                   autoFocus
                   variant="filled"
-                  onChange = {(event) => setEmail(event.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
                 <TextField
                   margin="normal"
@@ -140,10 +181,10 @@ const Login = () => {
                   id="password"
                   autoComplete="current-password"
                   variant="filled"
-                  onChange = {(event) => setPassword(event.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end" >
+                      <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
                           onClick={handleClickShowPassword}
@@ -175,11 +216,37 @@ const Login = () => {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2" style={{ color: "white" }}>
+                    <Link
+                      href="#"
+                      variant="body2"
+                      style={{ color: "white" }}
+                      onClick={handleOpen}
+                    >
                       Forgot password?
                     </Link>
                   </Grid>
                 </Grid>
+                <Dialog open={openforgot} onClose={handleClose} style={{backgroundColor:'inherit'}}>
+                  <DialogTitle>Update Profile</DialogTitle>
+                    <DialogContent>
+                      <TextField
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
+                        value={forgotemail}
+                        onChange={handleEmailChange}
+                        style={{ marginBottom: "16px" }}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="inherit">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleEmailSubmit} variant="contained" color="inherit" type="submit">
+                        Send
+                      </Button>
+                    </DialogActions>
+                </Dialog>
               </Box>
             </Box>
           </div>

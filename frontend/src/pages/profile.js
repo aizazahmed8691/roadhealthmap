@@ -169,10 +169,10 @@ const [open, setOpen] = useState(false);
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="dark" variant="contained">
+          <Button onClick={handleClose} color="inherit" variant="contained">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} color="dark" variant="contained">
+          <Button onClick={handleSubmit} color="inherit" variant="contained">
             Submit
           </Button>
         </DialogActions>

@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
-    overflowX: 'auto',
+    width: "100%",
+    overflowX: "auto",
   },
   table: {
     minWidth: 650,
   },
 });
 
-const FeedbackDisplay = ({ feedbacks }) => {
+const FeedbackDisplay = () => {
   const classes = useStyles();
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/feedbacks')
+      .then(response => setFeedbacks(response.data))
+      .catch(error => console.log(error));
+  }, []);
 
   return (
     <Paper className={classes.root}>
@@ -32,19 +40,20 @@ const FeedbackDisplay = ({ feedbacks }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {/* {feedbacks.map((feedback) => ( */}
-            <TableRow>
+          {feedbacks.map((feedback) => (
+            <TableRow key={feedback._id}>
               <TableCell component="th" scope="row">
+                {feedback.name}
               </TableCell>
-              <TableCell align="right"></TableCell>
-              <TableCell align="right"></TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="right">{feedback.email}</TableCell>
+              <TableCell align="right">{feedback.feedback}</TableCell>
+              <TableCell align="right">{feedback.date}</TableCell>
             </TableRow>
-        {/* //   ))} */}
+          ))}
         </TableBody>
       </Table>
     </Paper>
   );
-}
+};
 
 export default FeedbackDisplay;

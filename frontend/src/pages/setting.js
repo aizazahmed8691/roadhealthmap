@@ -48,49 +48,6 @@ function SettingsPage() {
   const handleProfileClose = () => {
     setOpenProfileModal(false);
   };
-  //for changing password
-  const [currentPass, setCurrentPass] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [confirmNewPass, setConfirmNewPass] = useState("");
-
-  const handleChangePass = async () => {
-    try {
-      await axios.post(
-        '/changePassword',
-        {
-          currentPassword: currentPass,
-          newPassword: newPass,
-          confirmNewPassword: confirmNewPass,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-      // handle success
-      console.log("success");
-      // clear input fields
-      setCurrentPass("");
-      setNewPass("");
-      setConfirmNewPass("");
-      // close dialog
-      handlePasswordClose();
-    } catch (err) {
-      // handle error
-      console.log(err.response.data.error);
-    }
-  };
-
-  const handleCurrentPass = (e) => {
-    setCurrentPass(e.target.value);
-  };
-
-  const handleNewPass = (e) => {
-    setNewPass(e.target.value);
-  };
-
-  const handleConfirmNewPass = (e) => {
-    setConfirmNewPass(e.target.value);
-  };
 
   //for updating profile
   const [inputValue, setInputValue] = useState("");
@@ -134,6 +91,46 @@ function SettingsPage() {
     }
   };
 
+  const [newpass, setNewPass] = useState("");
+
+  const handleNewPass = (event) => {
+    setNewPass(event.target.value);
+  };
+  const [Cnfrmpass, setCnfrmPass] = useState("");
+
+  const handleCnfrmPass = (event) => {
+    setCnfrmPass(event.target.value);
+  };
+  const handlePassSubmit = async (event) => {
+    event.preventDefault();
+    const adminId = localStorage.getItem("admin_id");
+    const password = newpass;
+
+    try {
+      const response = await fetch("http://localhost:5000/changePassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          admin_id: adminId,
+          password: password,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        // password updated successfully
+        console.log(data.msg);
+      } else {
+        // admin id not found
+        console.log(data.msg);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   return (
     <div>
       <Header />
@@ -167,39 +164,36 @@ function SettingsPage() {
           <TextField
             autoFocus
             margin="dense"
-            id="current-password"
-            label="Current Password"
-            type="password"
-            value={currentPass}
-            onChange={handleCurrentPass}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
             id="new-password"
             label="New Password"
             type="password"
-            value={newPass}
+            value={newpass}
             onChange={handleNewPass}
             fullWidth
           />
           <TextField
-            autoFocus
             margin="dense"
             id="confirm-new-password"
             label="Confirm New Password"
             type="password"
-            value={confirmNewPass}
-            onChange={handleConfirmNewPass}
+            value={Cnfrmpass}
+            onChange={handleCnfrmPass}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handlePasswordClose} color="primary">
+          <Button
+            onClick={handlePasswordClose}
+            variant="contained"
+            color="inherit"
+          >
             Cancel
           </Button>
-          <Button onClick={handleChangePass} color="primary">
+          <Button
+            onClick={handlePassSubmit}
+            variant="contained"
+            color="inherit"
+          >
             Save
           </Button>
         </DialogActions>
@@ -243,10 +237,14 @@ function SettingsPage() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleProfileClose} color="primary">
+          <Button
+            onClick={handleProfileClose}
+            variant="contained"
+            color="inherit"
+          >
             Cancel
           </Button>
-          <Button onClick={handleSubmit} color="primary">
+          <Button onClick={handleSubmit} variant="contained" color="inherit">
             Save
           </Button>
         </DialogActions>
