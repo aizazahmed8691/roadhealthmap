@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Container, TextField, Button, Typography } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const ResetPasswordPage = ({ match }) => {
+const ResetPasswordPage = () => {
+  const { token } = useParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const tonavigate = useNavigate();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -26,7 +29,7 @@ const ResetPasswordPage = ({ match }) => {
 
     try {
       const response = await axios.post('http://localhost:5000/resetPassword', {
-        token: match.params.token,
+        token,
         password,
       });
 
@@ -42,20 +45,35 @@ const ResetPasswordPage = ({ match }) => {
     }
   };
 
+  const handleLogin = () => {
+    tonavigate('/login');
+  };
+
   return (
     <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
       <div>
-        <Typography variant="h4" align="center" mb={3}>Reset Password</Typography>
+        <Typography variant="h4" align="center" mb={3}>
+          Reset Password
+        </Typography>
         {success ? (
-          <Typography variant="body1" align="center">Password reset successfully.</Typography>
+          <>
+            <Typography variant="body1" align="center" mb={2}>
+              Password reset successfully.
+            </Typography>
+            <Button variant="contained" color="inherit" onClick={handleLogin}>
+              Go to Login
+            </Button>
+          </>
         ) : (
-          <form onSubmit={handleSubmit} sx={{alignItems: 'center' }}>
+          <form onSubmit={handleSubmit} sx={{ alignItems: 'center' }}>
             <TextField type="password" label="New Password" value={password} onChange={handlePasswordChange} sx={{ mb: 2 }} />
-            <br/>
+            <br />
             <TextField type="password" label="Confirm Password" value={confirmPassword} onChange={handleConfirmPasswordChange} sx={{ mb: 2 }} />
             {error && <Typography color="error">{error}</Typography>}
-            <br/>
-            <Button type="submit" variant="contained" color="inherit" sx={{ mt: 2 }}>Reset Password</Button>
+            <br />
+            <Button type="submit" variant="contained" color="inherit" sx={{ mt: 2 }}>
+              Reset Password
+            </Button>
           </form>
         )}
       </div>
@@ -64,3 +82,4 @@ const ResetPasswordPage = ({ match }) => {
 };
 
 export default ResetPasswordPage;
+

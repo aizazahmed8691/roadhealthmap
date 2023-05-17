@@ -51,7 +51,7 @@ const Login = () => {
     const data = new FormData(event.currentTarget);
     if (email === "" || password === "") {
       setErrormsg("All fields are required!");
-      return;
+      window.alert(errormsg);
     } else {
       console.log(email, password);
       await axios
@@ -66,6 +66,8 @@ const Login = () => {
             "user",
             JSON.stringify(response.data.savedAdmin)
           );
+          localStorage.setItem("authtoken", response.data.token);
+          console.log(response.data.token);
           history("/dashboard");
         })
         .catch((error) => {
@@ -227,11 +229,12 @@ const Login = () => {
                   </Grid>
                 </Grid>
                 <Dialog open={openforgot} onClose={handleClose} style={{backgroundColor:'inherit'}}>
-                  <DialogTitle>Update Profile</DialogTitle>
+                  <DialogTitle>Email Verification</DialogTitle>
                     <DialogContent>
                       <TextField
                         label="Email"
                         variant="outlined"
+                        autoComplete="email"
                         fullWidth
                         value={forgotemail}
                         onChange={handleEmailChange}

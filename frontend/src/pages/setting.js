@@ -7,29 +7,11 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+
 import Header from "../components/header";
 import axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(3, 2),
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  card: {
-    width: "100%",
-  },
-  avatar: {
-    width: theme.spacing(10),
-    height: theme.spacing(10),
-    margin: "auto",
-  },
-}));
-
 function SettingsPage() {
-  const classes = useStyles();
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
 
@@ -103,33 +85,38 @@ function SettingsPage() {
   };
   const handlePassSubmit = async (event) => {
     event.preventDefault();
-    const adminId = localStorage.getItem("admin_id");
-    const password = newpass;
-
+  
+    const newPassword = newpass;
+    const confirmNewPassword = Cnfrmpass;
+  
     try {
-      const response = await fetch("http://localhost:5000/changePassword", {
-        method: "POST",
+      const token = localStorage.getItem("authtoken");
+      console.log("Token:", token);
+      const response = await fetch("http://localhost:5000/ChangePassword", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          admin_id: adminId,
-          password: password,
+          newPassword,
+          confirmNewPassword,
         }),
       });
-      const data = await response.json();
-      if (data.success) {
-        // password updated successfully
+  
+      if (response.ok) {
+        const data = await response.json();
         console.log(data.msg);
+        window.alert("Password changed successfully!");
       } else {
-        // admin id not found
-        console.log(data.msg);
+        console.log("Request failed with status:", response.status);
       }
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
+  
+  
 
   return (
     <div>

@@ -8,22 +8,29 @@ const bodyParser = require('body-parser');
 require('./db');
 require('./models/Admin');
 require('./models/AdminProfile');
+require('./models/Values');
+require('./models/Classified');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminProfileRoute')
 const feedBackRoutes = require('./routes/feedBackRoutes')
 const requireToken = require('./middleware/AuthTokenRequired');
+const valuesRoute = require('./routes/valuesRoute');
+const mappingRoute = require('./routes/mappingRoute');
+
 app.use("/uploads",express.static("uploads"));
 app.use(express.urlencoded({limit: '50mb',extended: true}));
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use(adminRoutes);
 app.use(feedBackRoutes);
+app.use(valuesRoute);
+app.use(mappingRoute);
 const cors = require('cors');
 
 app.use(cors({
-    origin: 'http://localhost:3000/settings',
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: 'http://localhost:3000',
+  allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
 app.get('/', requireToken, (req, res) => {

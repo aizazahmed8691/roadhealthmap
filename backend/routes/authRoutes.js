@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const cors = require('cors');
 
 
 router.post('/signup', async (req, res) => {
@@ -58,9 +59,9 @@ router.post('/login', async (req, res) => {
                     {
                         expiresIn: "2h",
                     });
-                    Admin.token = token
-                console.log(savedAdmin)
-                console.log(Admin.token)
+                    savedAdmin.authtoken = token;
+                savedAdmin.save();
+                console.log(savedAdmin);
                 res.status(200).json({
                     token,
                     savedAdmin
@@ -78,34 +79,36 @@ router.post('/login', async (req, res) => {
 
 router.get('/profile')
 
-router.post('/changePassword', jwtToken, async (req, res) => {
-    try {
-        const adminId = req.body.admin_id;
-        const password = req.body.password;
+router.options('*', cors({
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-        console.log('adminId:', adminId);
-        console.log('password:', password); 
+router.put('/ChangePassword', jwtToken, async (req, res) => {
+  const { newPassword, confirmNewPassword } = req.body;
 
-        const admin = await Admin.findById(adminId);
-
-        console.log('admin:', admin); 
-
-        if (admin) {
-            // const passwordHash = await bcrypt.hash(password, 8);
-
-            admin.password = password;
-            await admin.save();
-
-            res.status(200).send({ success: true, msg: "password updated" });
-        } else {
-            res.status(200).send({ success: false, msg: "admin id not found" });
-        }
-
-    } catch (error) {
-        console.log('error:', error);
-        res.status(400).send(error.message);
+  try {
+    // Find the admin by their ID
+    const admin = await Admin.findById(req.admin._id);
+    
+    // Check if the new passwords match
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ msg: 'New passwords do not match' });
     }
+    
+    admin.password = newPassword;
+
+    // Save the updated admin in the database
+    await admin.save();
+    
+    res.json({ msg: 'Password changed successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
 });
+
+
+
 //     try {
 //         const adminid = req.body._id;
 //         const password = req.body.password;
@@ -151,8 +154,8 @@ router.post('/forgotPassword', async (req, res) => {
       // Generate a reset token
       const resetToken = crypto.randomBytes(32).toString('hex');
   
-      Admin.resetPasswordToken = resetToken;
-      Admin.resetPasswordExpires = Date.now() + 3600000;
+      admin.resettoken = resetToken;
+      admin.resetPasswordExpires = Date.now() + 3600000;
       await admin.save();
   
       const transporter = nodemailer.createTransport({
@@ -160,8 +163,8 @@ router.post('/forgotPassword', async (req, res) => {
         port: 465,
         secure: true,
         auth: {
-          user: 'aizazahmed8691@gmail.com',
-          pass: 'jjktokjbbvisrkne',
+          user: process.env.User,
+          pass: process.env.Pass,
         },
       });
   
@@ -189,7 +192,7 @@ router.post('/forgotPassword', async (req, res) => {
       }
   
       const admin = await Admin.findOne({
-        resetPasswordToken: token,
+        resettoken: token,
         resetPasswordExpires: { $gt: Date.now() },
       });
   
@@ -198,7 +201,7 @@ router.post('/forgotPassword', async (req, res) => {
       }
   
       admin.password = password;
-      admin.resetPasswordToken = null;
+      admin.resettoken = null;
       admin.resetPasswordExpires = null;
   
       await admin.save();
