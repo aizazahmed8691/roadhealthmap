@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const cors = require('cors');
 
 
-router.post('roadhealthmap.vercel.app/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
     console.log(req.body);
 
     const { email, password} = req.body;
@@ -41,7 +41,7 @@ router.post('roadhealthmap.vercel.app/signup', async (req, res) => {
     )
 })
 
-router.post('roadhealthmap.vercel.app/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     const{email, password} = req.body;
     if(!email || !password){
         return res.status(422).json({error: "Email or Password is not entered!"});
@@ -77,13 +77,13 @@ router.post('roadhealthmap.vercel.app/login', async (req, res) => {
     }
 })
 
-router.get('roadhealthmap.vercel.app/profile')
+router.get('/profile')
 
 router.options('*', cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-router.put('roadhealthmap.vercel.app/ChangePassword', jwtToken, async (req, res) => {
+router.put('/ChangePassword', jwtToken, async (req, res) => {
   const { newPassword, confirmNewPassword } = req.body;
 
   try {
@@ -136,7 +136,7 @@ router.put('roadhealthmap.vercel.app/ChangePassword', jwtToken, async (req, res)
 
 
 // Forgot password API
-router.post('roadhealthmap.vercel.app/forgotPassword', async (req, res) => {
+router.post('/forgotPassword', async (req, res) => {
     try {
       
       const { email } = req.body;
@@ -183,7 +183,7 @@ router.post('roadhealthmap.vercel.app/forgotPassword', async (req, res) => {
     }
   });
 
-  router.post('roadhealthmap.vercel.app/resetPassword', async (req, res) => {
+  router.post('/resetPassword', async (req, res) => {
     try {
       const { token, password } = req.body;
   

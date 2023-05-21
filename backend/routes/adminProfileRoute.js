@@ -10,7 +10,7 @@ const upload=require('../middleware/multer')
 require('dotenv').config();
 const cloudinary = require('../middleware/Cloudinary')
 
-router.post('roadhealthmap.vercel.app/adminProfile',upload.single("image"), async (req, res) => {
+router.post('/adminProfile',upload.single("image"), async (req, res) => {
     console.log(req.body);
 
 
@@ -43,7 +43,7 @@ router.post('roadhealthmap.vercel.app/adminProfile',upload.single("image"), asyn
     )
 })
 
-router.post('roadhealthmap.vercel.app/getAdminProfile',async (req, res) => {
+router.post('/getAdminProfile',async (req, res) => {
     const email=req.body.email;
     console.log(req.body)
     AdminProfile.findOne({email: email})
@@ -55,7 +55,7 @@ router.post('roadhealthmap.vercel.app/getAdminProfile',async (req, res) => {
 })
 })
 
-router.put('roadhealthmap.vercel.app/updateAdminProfile/:id', upload.single("image"), async (req, res) => {
+router.put('/updateAdminProfile/:id', upload.single("image"), async (req, res) => {
     const { name, description,adminID} = req.body;
     console.log(req.body)
     // const check =await AdminProfile.find({})
@@ -82,7 +82,7 @@ router.put('roadhealthmap.vercel.app/updateAdminProfile/:id', upload.single("ima
         });
   });
 
-  router.get('roadhealthmap.vercel.app/getAdminid',async (req, res) => {
+  router.get('/getAdminid',async (req, res) => {
     const id=req.body._id;
     console.log(req.body)
     AdminProfile.findOne({id: id})
