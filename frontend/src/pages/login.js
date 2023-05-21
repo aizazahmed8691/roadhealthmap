@@ -113,7 +113,7 @@ const Login = () => {
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://roadhealthmap.vercel.app/forgotPassword", {
+      const response = await axios.post("https://roadhealthmap.vercel.app/forgotPassword", {
         email: forgotemail,
       });
       const { success, message } = response.data;
