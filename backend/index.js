@@ -29,7 +29,7 @@ app.use(mappingRoute);
 const cors = require('cors');
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://roadhealthmap-dckc.vercel.app',
   allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
