@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import { faBars, faMap, faSignOut, faBell,faDashboard, faChartLine, faComment, faCog, faTasks, faPerson} from "@fortawesome/free-solid-svg-icons";
+import { faBars, faMap, faSignOut, faBell,faDashboard, faChartLine, faComment, faCog, faPerson} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -50,9 +50,9 @@ const Header = () => {
   const feed = () =>{
     tonavigate('/feedb')
   }
-  const task = () =>{
-    tonavigate('/todo')
-  }
+  // const task = () =>{
+  //   tonavigate('/todo')
+  // }
   const home = () => {
     tonavigate('/home')
   }
@@ -95,12 +95,6 @@ const Header = () => {
           </ListItemIcon>
         </ListItemButton>
         <ListItemButton>
-          <ListItemText onClick={task}>Task Manager</ListItemText>
-          <ListItemIcon style={{paddingLeft:'15px'}}>
-            <FontAwesomeIcon icon={faTasks} />
-          </ListItemIcon>
-        </ListItemButton>
-        <ListItemButton>
           <ListItemText onClick={setting}>Settings</ListItemText>
           <ListItemIcon style={{paddingLeft:'15px'}}>
             <FontAwesomeIcon icon={faCog} />
@@ -128,10 +122,10 @@ const Header = () => {
             Road <span style={{color:'black'}}>Health</span> Map
             <FontAwesomeIcon icon={faMap} style={{paddingLeft:'10px', color:'black'}}/>
           </Typography>
-          <Button color="inherit">
+          <Button color="inherit" onClick={feed}>
           <FontAwesomeIcon icon={faBell} style={{paddingright:'12px', color:'black'}}/>
           </Button>
-          <Button color="dark" variant="contained" onClick={handleLogout}>Logout
+          <Button color="inherit" variant="contained" onClick={handleLogout}>Logout
           <FontAwesomeIcon icon={faSignOut} style={{paddingLeft:'5px', color:'black'}}/>
           </Button>
         </Toolbar>

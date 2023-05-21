@@ -1,124 +1,85 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import dayjs from 'dayjs';
-import Badge from '@mui/material/Badge';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { PickersDay } from '@mui/x-date-pickers/PickersDay';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
+import React, { useState } from 'react';
+import { Button, Grid, Typography, TextField } from '@mui/material';
+import { DatePicker } from '@mui/lab'
 
-function getRandomNumber(min, max) {
-  return Math.round(Math.random() * (max - min) + min);
-}
+const Calendar = () => {
+  const currentDate = new Date();
+  const [selectedDate, setSelectedDate] = useState(currentDate);
 
-function fakeFetch(date, { signal }) {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      const daysInMonth = date.daysInMonth();
-      const daysToHighlight = [1, 2, 3].map(() => getRandomNumber(1, daysInMonth));
-
-      resolve({ daysToHighlight });
-    }, 500);
-
-    signal.onabort = () => {
-      clearTimeout(timeout);
-      reject(new DOMException('aborted', 'AbortError'));
-    };
-  });
-}
-
-const initialValue = dayjs('2022-04-17');
-
-function ServerDay(props) {
-  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-
-  const isSelected =
-    !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) > 0;
-
-  return (
-    <Badge
-      key={props.day.toString()}
-      overlap="circular"
-      badgeContent={isSelected ? '🌚' : undefined}
-    >
-      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-    </Badge>
-  );
-}
-
-ServerDay.propTypes = {
-  /**
-   * The date to show.
-   */
-  day: PropTypes.object.isRequired,
-  highlightedDays: PropTypes.arrayOf(PropTypes.number),
-  /**
-   * If `true`, day is outside of month and will be hidden.
-   */
-  outsideCurrentMonth: PropTypes.bool.isRequired,
-};
-
-export default function DateCalendarServerRequest() {
-  const requestAbortController = React.useRef(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
-
-  const fetchHighlightedDays = (date) => {
-    const controller = new AbortController();
-    fakeFetch(date, {
-      signal: controller.signal,
-    })
-      .then(({ daysToHighlight }) => {
-        setHighlightedDays(daysToHighlight);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        // ignore the error if it's caused by `controller.abort`
-        if (error.name !== 'AbortError') {
-          throw error;
-        }
-      });
-
-    requestAbortController.current = controller;
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
   };
 
-  React.useEffect(() => {
-    fetchHighlightedDays(initialValue);
-    // abort request on unmount
-    return () => requestAbortController.current?.abort();
-  }, []);
+  const getCalendarDays = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const prevMonthDays = firstDayOfMonth.getDay();
+    const nextMonthDays = 6 - lastDayOfMonth.getDay();
 
-  const handleMonthChange = (date) => {
-    if (requestAbortController.current) {
-      // make sure that you are aborting useless requests
-      // because it is possible to switch between months pretty quickly
-      requestAbortController.current.abort();
+    const days = [];
+    const startDate = new Date(year, month, 1 - prevMonthDays);
+
+    for (let i = 0; i < prevMonthDays; i++) {
+      days.push({
+        date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i),
+        isInCurrentMonth: false,
+      });
     }
 
-    setIsLoading(true);
-    setHighlightedDays([]);
-    fetchHighlightedDays(date);
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      days.push({
+        date: new Date(year, month, i),
+        isInCurrentMonth: true,
+      });
+    }
+
+    for (let i = 1; i <= nextMonthDays; i++) {
+      days.push({
+        date: new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + i),
+        isInCurrentMonth: false,
+      });
+    }
+
+    return days;
   };
 
+  const renderCalendarDays = (days) => {
+    return days.map((day) => {
+      const dayClasses = day.isInCurrentMonth ? 'calendar-day' : 'calendar-day other-month';
+
+      return (
+        <Grid item key={day.date.toISOString()}>
+          <Button className={dayClasses} onClick={() => handleDateChange(day.date)}>
+            {day.date.getDate()}
+          </Button>
+        </Grid>
+      );
+    });
+  };
+
+  const calendarDays = getCalendarDays(selectedDate);
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar
-        defaultValue={initialValue}
-        loading={isLoading}
-        onMonthChange={handleMonthChange}
-        renderLoading={() => <DayCalendarSkeleton />}
-        slots={{
-          day: ServerDay,
-        }}
-        slotProps={{
-          day: {
-            highlightedDays,
-          },
-        }}
+    <div>
+      <Typography variant="h6" gutterBottom>
+        Current Year: {currentDate.getFullYear()}
+      </Typography>
+      <DatePicker
+        label="Select a date"
+        value={selectedDate}
+        onChange={handleDateChange}
+        renderInput={(params) => <TextField {...params} />}
       />
-    </LocalizationProvider>
+      <Grid container spacing={1} justifyContent="center">
+        {renderCalendarDays(calendarDays)}
+      </Grid>
+      <Button variant="contained" color="primary" onClick={() => handleDateChange(currentDate)}>
+        Go to Today
+      </Button>
+    </div>
   );
-}
+};
 
-
+export default Calendar;
