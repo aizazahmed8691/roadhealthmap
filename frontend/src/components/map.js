@@ -85,7 +85,7 @@ const MapContainer = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/classified');
+        const response = await axios.get('http://roadhealthmap.vercel.app/classified');
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

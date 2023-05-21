@@ -55,7 +55,7 @@ const Login = () => {
     } else {
       console.log(email, password);
       await axios
-        .post("http://localhost:5000/login", {
+        .post("http://roadhealthmap.vercel.app/login", {
           email,
           password,
         })
@@ -113,7 +113,7 @@ const Login = () => {
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/forgotPassword", {
+      const response = await axios.post("http://roadhealthmap.vercel.app/forgotPassword", {
         email: forgotemail,
       });
       const { success, message } = response.data;
