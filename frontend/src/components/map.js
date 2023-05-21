@@ -112,37 +112,62 @@ const MapContainer = (props) => {
   return (
     <LoadScript googleMapsApiKey={props.apiKey} libraries={["places"]}>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-  <Autocomplete
-    onPlaceSelected={handleCurrentLocationSelect}
-    types={["geocode"]}
-    placeholder="Current location"
-    value={currentLocationInput}
-    onChange={(event) => setCurrentLocationInput(event.target.value)}
-    style={{ padding: "10px", border: "none", borderRadius: "2px", marginRight: "10px", flex: "1" }}
-    inputContainerStyle={{ backgroundColor: "transparent", border: "none" }}
-    highlightFirstSuggestion={true}
-  />
-  <Autocomplete
-    onPlaceSelected={handlePlaceSelect}
-    types={["(regions)"]}
-    componentRestrictions={{ country: "us" }}
-    placeholder="Destination"
-    value={destinationInput}
-    onChange={(event) => setDestinationInput(event.target.value)}
-    style={{ padding: "10px", border: "none", borderRadius: "2px", marginRight: "10px", flex: "1" }}
-    inputContainerStyle={{ backgroundColor: "transparent", border: "none" }}
-    highlightFirstSuggestion={true}
-  />
-  <button onClick={handleDirections} style={{ padding: "10px 20px", border: "none", borderRadius: "5px", color:"inherit", cursor: "pointer" }}>
-    Get Directions
-  </button>
+      <Autocomplete
+        onPlaceSelected={handleCurrentLocationSelect}
+        types={['geocode']}
+        placeholder="Current location"
+        value={currentLocationInput}
+        onChange={(event) => setCurrentLocationInput(event.target.value)}
+        style={{
+          padding: '10px',
+          border: 'none',
+          borderRadius: '2px',
+          marginBottom: '10px',
+        }}
+        inputContainerStyle={{
+          backgroundColor: 'transparent',
+          border: 'none',
+        }}
+        highlightFirstSuggestion={true}
+      />
+      <Autocomplete
+        onPlaceSelected={handlePlaceSelect}
+        types={['(regions)']}
+        componentRestrictions={{ country: 'us' }}
+        placeholder="Destination"
+        value={destinationInput}
+        onChange={(event) => setDestinationInput(event.target.value)}
+        style={{
+          padding: '10px',
+          border: 'none',
+          borderRadius: '2px',
+          marginBottom: '10px',
+        }}
+        inputContainerStyle={{
+          backgroundColor: 'transparent',
+          border: 'none',
+        }}
+        highlightFirstSuggestion={true}
+      />
+      <button
+        onClick={handleDirections}
+        style={{
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px',
+          color: 'inherit',
+          cursor: 'pointer',
+        }}
+      >
+        Get Directions
+      </button>
 </div>
 
       <GoogleMap
         zoom={8}
         center={currentLocation}
         mapContainerStyle={{
-          width: "800px",
+          width: "900px",
           height: "400px",
           position: "fixed",
           marginTop:"20px"
