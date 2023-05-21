@@ -4,7 +4,7 @@ const router = express.Router();
 const Classified = mongoose.model('Classified');
 
 // define a GET route to fetch data from the "classified" collection
-router.get('/classified', async (req, res) => {
+router.get('roadhealthmap.vercel.app/classified', async (req, res) => {
   try {
       const data = await Classified.find();
       console.log(data);

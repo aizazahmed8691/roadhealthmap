@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Feedback = require('../models/Feedback');
 // const Feedback = mongoose.model('Feedback');
 
-router.get('/feedbacks', async (req, res) => {
+router.get('roadhealthmap.vercel.app/feedbacks', async (req, res) => {
   try {
     const feedbacks = await Feedback.find();
     console.log('Feedbacks:', feedbacks);
