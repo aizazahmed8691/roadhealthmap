@@ -12,15 +12,17 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Dialog,
+import {
+  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, } from "@material-ui/core";
+  DialogTitle,
+} from "@material-ui/core";
 
 const theme = createTheme();
 
@@ -113,9 +115,12 @@ const Login = () => {
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("https://roadhealthmap.vercel.app/forgotPassword", {
-        email: forgotemail,
-      });
+      const response = await axios.post(
+        "https://roadhealthmap.vercel.app/forgotPassword",
+        {
+          email: forgotemail,
+        }
+      );
       const { success, message } = response.data;
       if (success) {
         alert("Password reset link sent to your email.");
@@ -126,7 +131,7 @@ const Login = () => {
       alert(error.message);
     }
   };
-  
+
   return (
     <div style={myStyle}>
       <ThemeProvider theme={theme}>
@@ -193,7 +198,11 @@ const Login = () => {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                          {showPassword ? (
+                            <FontAwesomeIcon icon={faEyeSlash} />
+                          ) : (
+                            <FontAwesomeIcon icon={faEye} />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -228,27 +237,36 @@ const Login = () => {
                     </Link>
                   </Grid>
                 </Grid>
-                <Dialog open={openforgot} onClose={handleClose} style={{backgroundColor:'inherit'}}>
+                <Dialog
+                  open={openforgot}
+                  onClose={handleClose}
+                  style={{ backgroundColor: "inherit" }}
+                >
                   <DialogTitle>Email Verification</DialogTitle>
-                    <DialogContent>
-                      <TextField
-                        label="Email"
-                        variant="outlined"
-                        autoComplete="email"
-                        fullWidth
-                        value={forgotemail}
-                        onChange={handleEmailChange}
-                        style={{ marginBottom: "16px" }}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleClose} color="inherit">
-                        Cancel
-                      </Button>
-                      <Button onClick={handleEmailSubmit} variant="contained" color="inherit" type="submit">
-                        Send
-                      </Button>
-                    </DialogActions>
+                  <DialogContent>
+                    <TextField
+                      label="Email"
+                      variant="outlined"
+                      autoComplete="email"
+                      fullWidth
+                      value={forgotemail}
+                      onChange={handleEmailChange}
+                      style={{ marginBottom: "16px" }}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="inherit">
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleEmailSubmit}
+                      variant="contained"
+                      color="inherit"
+                      type="submit"
+                    >
+                      Send
+                    </Button>
+                  </DialogActions>
                 </Dialog>
               </Box>
             </Box>
