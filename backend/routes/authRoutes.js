@@ -172,7 +172,7 @@ router.post('/forgotPassword', async (req, res) => {
         from: 'aizazahmed8691@gmail.com',
         to: email,
         subject: 'Password Reset Link',
-        text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link or paste it into your browser to complete the process:\n\nhttp://localhost:3000/reset/${resetToken}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link or paste it into your browser to complete the process:\n\nhttps://roadhealthmap-dckc.vercel.app/reset/${resetToken}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`,
       };
   
       await transporter.sendMail(mailOptions);
