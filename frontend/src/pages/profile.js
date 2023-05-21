@@ -65,7 +65,7 @@ const [open, setOpen] = useState(false);
       formData.append("adminid",user._id)
       console.log(user.email)
 
-      fetch('http://roadhealthmap.vercel.app/adminProfile',{
+      fetch('https://roadhealthmap.vercel.app/adminProfile',{
         method: 'POST',
         body: formData
       }).then(res=>res.json())
@@ -81,7 +81,7 @@ const [open, setOpen] = useState(false);
     const user=JSON.parse(localStorage.getItem('user'))
     console.log(user.email)
     let email=user.email;
-      await Axios.post('http://roadhealthmap.vercel.app/getAdminProfile', {
+      await Axios.post('https://roadhealthmap.vercel.app/getAdminProfile', {
         email
       })
       .then((response) => {

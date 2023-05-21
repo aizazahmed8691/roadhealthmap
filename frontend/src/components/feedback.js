@@ -23,7 +23,7 @@ const FeedbackDisplay = () => {
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://roadhealthmap.vercel.app/feedbacks')
+    axios.get('https://roadhealthmap.vercel.app/feedbacks')
       .then(response => setFeedbacks(response.data))
       .catch(error => console.log(error));
   }, []);

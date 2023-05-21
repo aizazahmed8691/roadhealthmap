@@ -26,7 +26,7 @@ function ValueTablePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://roadhealthmap.vercel.app/classified");
+        const response = await axios.get("https://roadhealthmap.vercel.app/classified");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);

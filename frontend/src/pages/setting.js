@@ -63,7 +63,7 @@ function SettingsPage() {
 
     try {
       await axios.put(
-        `http://roadhealthmap.vercel.app/updateAdminProfile/${user._id}`,
+        `https://roadhealthmap.vercel.app/updateAdminProfile/${user._id}`,
         formData
       );
       alert("Admin profile updated successfully");
@@ -92,7 +92,7 @@ function SettingsPage() {
     try {
       const token = localStorage.getItem("authtoken");
       console.log("Token:", token);
-      const response = await fetch("http://roadhealthmap.vercel.app/ChangePassword", {
+      const response = await fetch("https://roadhealthmap.vercel.app/ChangePassword", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

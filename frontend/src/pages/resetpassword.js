@@ -28,7 +28,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await axios.post('http://roadhealthmap.vercel.app/resetPassword', {
+      const response = await axios.post('https://roadhealthmap.vercel.app/resetPassword', {
         token,
         password,
       });
